@@ -79,6 +79,8 @@ function setup() {
                             wall15 = createSprite(
                               100, 370, 140, 70);
                               wall15.shapeColor = color(0);
+                              wall16 = createSprite(0,0,150,10);
+                              wall16.shapeColor = color('white');
     spr2 = createSprite(0, 0, 50, 50);
     spr2.shapeColor = color(128);
     
@@ -92,35 +94,53 @@ function setup() {
     background(50);
    
     
-    spr2.velocity.x = (mouseX-spr2.position.x)*0.2;
-    spr2.velocity.y = (mouseY-spr2.position.y)*0.2; 
-    walls=[wall1, wall2,wall3,wall5,wall6,wall7,wall8,wall9,wall10,wall11,wall12,wall13,wall14,wall15];
+
+    walls=[wall1, wall2,wall3,wall5,wall6,wall7,wall8,wall9,wall10,wall11,wall12,wall13,wall14,wall15, wall16];
     for(i=0;i<13;i++){
       spr2.collide(walls[i]);
       spr.collide(walls[i]);
     };
     spr2.collide(walls[1,0]);
     spr.displace(wall4);
-   
-    drawSprites();
+    spr2.displace(wall4);
+    spr.collide(wall16);
+    
   
+    drawSprites();
+
   }
   
   function keyPressed() {
       if (keyCode == RIGHT_ARROW) {
-        spr.setSpeed(1.5, 0);
+        spr2.setSpeed(1.5, 0);
       }
       else if (keyCode == DOWN_ARROW) {
-        spr.setSpeed(1.5, 90);
+        spr2.setSpeed(1.5, 90);
       }
       else if (keyCode == LEFT_ARROW) {
-        spr.setSpeed(1.5, 180);
+        spr2.setSpeed(1.5, 180);
       }
       else if (keyCode == UP_ARROW) {
-        spr.setSpeed(1.5, 270);
+        spr2.setSpeed(1.5, 270);
       }
       else if (key == ' ') {
+        spr2.setSpeed(0, 0);
+      }
+      if (key == 'd') {
+        spr.setSpeed(1.5, 0);
+      }
+      else if (key == 's') {
+        spr.setSpeed(1.5, 90);
+      }
+      else if (key == 'a') {
+        spr.setSpeed(1.5, 180);
+      }
+      else if (key == 'w') {
+        spr.setSpeed(1.5, 270);
+      }
+      else if (key == 'x') {
         spr.setSpeed(0, 0);
       }
       return false;
     }
+    
