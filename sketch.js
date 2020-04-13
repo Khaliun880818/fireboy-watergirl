@@ -17,10 +17,11 @@ var wall16;
 var spr2;
 var spr4;
 var spr;
-
+var img;
 function setup() {
   background(0);
   createCanvas(700, 700);
+  img = loadImage('./gameover.jpg')
   //bottom right1;
   wall1 = createSprite(
   100, 650, 140, 70);
@@ -110,23 +111,23 @@ function setup() {
     spr.collide(door);
     //fire reaction
   if (spr.overlap(fire)){
-    fire.shapeColor=color(200,0,0);
+    fire.shapeColor=color(100,0,0); 
   }
   else{
-    fire.shapeColor=(100,0,0);
+    fire.shapeColor=color(200,0,0)
   }
-  if (spr.overlap(fire)){
-    //game over;
+  if (spr2.overlap(fire)){
+    location.replace("./index3.html");
   }
   //water reaction
   if (spr2.overlap(water)){
-    water.shapeColor=color(0,0,200);
+    water.shapeColor=color(0,0,100);
   }
   else{
-    water.shapeColor=(0,0,100);
+    water.shapeColor=color(0,0,200);
   }
   if (spr.overlap(water)){
-    //game over;
+    location.replace("./index3.html");
   }
   
 

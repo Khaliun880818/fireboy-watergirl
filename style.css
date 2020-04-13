@@ -6,3 +6,9 @@ body {
         justify-content: center;
     
 }
+img {
+image-orientation: center;
+width: 700px;
+height: 700px;
+
+}
