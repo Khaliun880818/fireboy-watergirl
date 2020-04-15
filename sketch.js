@@ -13,7 +13,7 @@ var positions = [
   { x: 595, y: 370, width: 240, height: 70 }, //line5 left;
 ];
 
-var walls;
+var walls = [];
 
 var button1;
 var water;
@@ -21,44 +21,36 @@ var fire;
 var spr2;
 var box;
 var spr;
-var img;
-var exitWater;
+var fireboy;
 function setup() {
-  createCanvas(700, 700);
-  
-  img = loadImage('./gameover.jpg')
 
-  function createWall({ x, y, width, height }) {
-    let wall = createSprite(x, y, width, height);
-    wall.shapeColor = color(96, 125, 139 );
-    return wall;
+  createCanvas(700, 700);
+  fireboy = loadImage('./fireboy.jpg')
+  for (let i = 0; i < positions.length; i++) {
+    let position = positions[i];
+    let wall = createSprite(position.x, position.y, position.width, position.height);
+    wall.shapeColor = color(96, 125, 139);
+    walls[i] = wall;
   }
-  walls = positions.map(createWall);
-  (645, 650, 70, 70);
 
   //line4 left;
-  fire = createSprite(
-    510, 440, 70, 70);
-  //fire.shapeColor = color(100, 0, 0);
+  fire = createSprite(510, 440, 70, 70);
+  //fire.shapeColor = color(100,0,0);
   //line6 right;
-  water = createSprite(
-    235, 300, 70, 70);
-  //water.shapeColor = color(0, 0, 100);
-  //count from bottom, line2, right;
-  box = createSprite(
-    205, 580, 70, 70);
-  box.shapeColor = color(141, 110, 99 );
+  water = createSprite(235, 300, 70, 70);
+  //water.shapeColor = color(0,0,100);
   //button
   button1 = createSprite(235, 180, 20, 20);
-
-  door = createSprite(510, 300, 70, 70)
-  door.shapeColor = color(141, 110, 99 )
+  //door
+  door = createSprite(510, 300, 70, 70);
+  door.shapeColor = color(141, 110, 99);
+  //watergirl
   spr2 = createSprite(570, 650, 50, 50);
-  spr2.shapeColor = color(135, 206, 235);
-
-  spr = createSprite(
-    570, 650, 40, 40);
+  spr2.shapeColor = color(128);
+  //fireboy
+  spr = createSprite(570, 650, 50, 50);
   spr.shapeColor = color(239, 154, 154);
+  spr.addImage(fireboy);
   //exits
   exitWater = createSprite(
     175, 65, 70, 120);
@@ -67,29 +59,24 @@ function setup() {
     645, 65, 70, 120);
   exitFire.shapeColor = color(0, 0, 0, 0)
 
-
 }
 function draw() {
   background(245);
 
-
-
-  // walls = [wall1, wall2, wall3, wall5, wall6, wall7, wall8, wall9, wall10, wall11, wall12, wall13];
   for (i = 0; i < 12; i++) {
     spr2.collide(walls[i]);
     spr.collide(walls[i]);
-    box.collide(walls[i]);
   };
   spr2.collide(walls[1, 0]);
-  spr.displace(box);
-  spr2.displace(box);
+  spr.displace(walls[3]);
+  spr2.displace(walls[3]);
 
   //fire reaction
   if (spr.overlap(fire)) {
-    fire.shapeColor = color(239, 154, 154 );
+    fire.shapeColor = color(239, 154, 154);
   }
   else {
-    fire.shapeColor = color(239, 83, 80 )
+    fire.shapeColor = color(239, 83, 80)
   }
   if (spr2.overlap(fire)) {
     location.replace("./index3.html");
@@ -99,12 +86,11 @@ function draw() {
     water.shapeColor = color(144, 202, 249);
   }
   else {
-    water.shapeColor = color(66, 165, 245 );
+    water.shapeColor = color(66, 165, 245);
   }
   if (spr.overlap(water)) {
     location.replace("./index3.html");
   }
-
   if (spr.overlap(exitFire) && spr2.overlap(exitWater)) {
     location.replace("./index4.html");
   }
@@ -113,14 +99,15 @@ function draw() {
     door.visible = false;
   }
   else {
-    door.visible = true;
+  door.visible = true;
     spr.collide(door);
+    spr2.collide(door);
   }
 
   drawSprites();
-
 }
 
+let database = firebase.database();
 function keyPressed() {
   if (keyCode == RIGHT_ARROW) {
     spr.setSpeed(1.5, 0);
@@ -154,3 +141,47 @@ function keyPressed() {
   }
   return false;
 }
+
+function updateFireboyPosition() {
+  database.ref("fireboy").update({
+    'moveright': spr.setSpeed(1.5, 0),
+    'movedown': spr.setSpeed(1.5, 90),
+    'moveleft': spr.setSpeed(1.5, 180),
+    'moveup': spr.setSpeed(1.5, 270),
+    'stop': spr.setSpeed(0, 0)
+  })
+}
+
+function updateWatergirlPosition() {
+  database.ref("watergirl").update({
+    'moverightW': spr2.setSpeed(1.5, 0),
+    'movedownW': spr2.setSpeed(1.5, 90),
+    'moveleftW': spr2.setSpeed(1.5, 180),
+    'moveupW': spr2.setSpeed(1.5, 270),
+    'stopW': spr2.setSpeed(0, 0)
+  })
+}
+
+firebase.database().ref().on("value", function updateFireboyPosition(snapshot) {
+  var obj = snapshot.val();
+  spr.setSpeed(1.5, 0) = obj.fireboy.moveright;
+  spr.setSpeed(1.5, 90) = obj.fireboy.movedown;
+  spr.setSpeed(1.5, 180) = obj.fireboy.moveleft;
+  spr.setSpeed(1.5, 270) = obj.fireboy.moveup;
+  spr.setSpeed(0, 0) = obj.fireboy.stop;
+}, function (error) {
+  console.log("Error" + error.code);
+}
+)
+
+firebase.database().ref().on("value", function updateWatergirlPosition(snapshot) {
+  var obj = snapshot.val();
+  spr2.setSpeed(1.5, 0) = obj.fireboy.moverightW;
+  spr2.setSpeed(1.5, 90) = obj.fireboy.movedownW;
+  spr2.setSpeed(1.5, 180) = obj.fireboy.moveleftW;
+  spr2.setSpeed(1.5, 270) = obj.fireboy.moveupW;
+  spr2.setSpeed(0, 0) = obj.fireboy.stopW;
+}, function (error) {
+  console.log("Error" + error.code);
+}
+)
