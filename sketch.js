@@ -94,7 +94,7 @@ function draw() {
       drawSprites();
 }
 
-var database = firebase.database(); 
+let database = firebase.database(); 
 function keyPressed() {
     if (keyCode == RIGHT_ARROW) {
       spr.setSpeed(1.5, 0);
