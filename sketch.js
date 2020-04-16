@@ -51,7 +51,7 @@ function setup() {
   //fireboy
   spr = createSprite(570, 650, 50, 50);
   spr.shapeColor = color(239, 154, 154);
-  spr.addImage(fireboy);
+  //spr.addImage(fireboy);
   //exits
   exitWater = createSprite(
     175, 65, 70, 120);
