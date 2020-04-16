@@ -22,6 +22,7 @@ var spr2;
 var box;
 var spr;
 var fireboy;
+var playingAs = window.prompt("Who are you playing as?")
 function setup() {
     background(0);
     createCanvas(700, 700);
@@ -93,82 +94,106 @@ function draw() {
     
       drawSprites();
 }
-
+console.log(firebase);
 let database = firebase.database(); 
+console.log(database.ref('fireboy')) 
+
 function keyPressed() {
-    if (keyCode == RIGHT_ARROW) {
-      spr.setSpeed(1.5, 0);
-    }
-    else if (keyCode == DOWN_ARROW) {
-      spr.setSpeed(1.5, 90);
-    }
-    else if (keyCode == LEFT_ARROW) {
-      spr.setSpeed(1.5, 180);
-    }
-    else if (keyCode == UP_ARROW) {
-      spr.setSpeed(1.5, 270);
-    }
-    else if (key == ' ') {
-      spr.setSpeed(0, 0);
-    }
+  if (playingAs =='fireboy'){
+      if (keyCode == RIGHT_ARROW) {
+        spr.setSpeed(1.5, 0);
+        database.ref('fireboy').update({
+          'speed' : 1.5,
+          'direction' : 0
+        })
+      console.log('up');
+      }
+      else if (keyCode == DOWN_ARROW) {
+        spr.setSpeed(1.5, 90);
+        database.ref('fireboy').update({
+          'speed' : 1.5,
+          'direction' : 90
+        })
+      }
+      else if (keyCode == LEFT_ARROW) {
+        spr.setSpeed(1.5, 180);
+        database.ref('fireboy').update({
+          'speed' : 1.5,
+          'direction' : 180
+        })
+      }
+      else if (keyCode == UP_ARROW) {
+        spr.setSpeed(1.5, 270);
+        database.ref('fireboy').update({
+          'speed' : 1.5,
+          'direction' : 270
+        })
+      }
+      else if (key == ' ') {
+        spr.setSpeed(0, 0);
+        database.ref('fireboy').update({
+          'speed' : 0,
+          'direction' : 0
+        })
+      }
+  }
+  else if (playingAs == 'watergirl'){
     if (key == 'd') {
       spr2.setSpeed(1.5, 0);
+      database.ref('watergirl').update({
+        'speed' : 1.5,
+        'direction' : 0
+      })
     }
     else if (key == 's') {
       spr2.setSpeed(1.5, 90);
+      database.ref('watergirl').update({
+        'speed' : 1.5,
+        'direction' : 90
+      })
     }
     else if (key == 'a') {
       spr2.setSpeed(1.5, 180);
+      database.ref('watergirl').update({
+        'speed' : 1.5,
+        'direction' : 180
+      })
     }
     else if (key == 'w') {
       spr2.setSpeed(1.5, 270);
+      database.ref('watergirl').update({
+        'speed' : 1.5,
+        'direction' : 270
+      })
     }
     else if (key == 'x') {
       spr2.setSpeed(0, 0);
+      database.ref('watergirl').update({
+        'speed' : 0,
+        'direction' : 0
+      })
     }
+  }
     return false;
 }
 
-function updateFireboyPosition(){
-  database.ref("fireboy").update({
-    'moveright' : spr.setSpeed(1.5, 0),
-    'movedown' : spr.setSpeed(1.5, 90),
-    'moveleft' : spr.setSpeed(1.5, 180),
-    'moveup' : spr.setSpeed(1.5, 270),
-    'stop' : spr.setSpeed(0, 0)
-  })
-}
 
-function updateWatergirlPosition(){
-  database.ref("watergirl").update({
-    'moverightW' : spr2.setSpeed(1.5, 0),
-    'movedownW' : spr2.setSpeed(1.5, 90),
-    'moveleftW' : spr2.setSpeed(1.5, 180),
-    'moveupW' : spr2.setSpeed(1.5, 270),
-    'stopW' : spr2.setSpeed(0, 0)
-  })
-}
-
+if (playingAs == 'fireboy'){
 firebase.database().ref().on("value", function updateFireboyPosition(snapshot){
   var obj = snapshot.val();
-  spr.setSpeed(1.5, 0) = obj.fireboy.moveright;
-  spr.setSpeed(1.5, 90) = obj.fireboy.movedown;
-  spr.setSpeed(1.5, 180) = obj.fireboy.moveleft;
-  spr.setSpeed(1.5, 270) = obj.fireboy.moveup;
-  spr.setSpeed(0, 0) = obj.fireboy.stop;
+  spr2.setSpeed(obj.watergirl.speed, obj.watergirl.direction)
+ 
 }, function (error){
   console.log("Error" + error.code);
+})
 }
-)
+else if (playingAs == 'watergirl'){
+  firebase.database().ref().on("value", function updateFireboyPosition(snapshot){
+    var obj = snapshot.val();
+    spr.setSpeed(obj.fireboy.speed, obj.fireboy.direction)
+   
+  }, function (error){
+    console.log("Error" + error.code);
+  })
+  }
 
-firebase.database().ref().on("value", function updateWatergirlPosition(snapshot){
-  var obj = snapshot.val();
-  spr2.setSpeed(1.5, 0) = obj.fireboy.moverightW;
-  spr2.setSpeed(1.5, 90) = obj.fireboy.movedownW;
-  spr2.setSpeed(1.5, 180) = obj.fireboy.moveleftW;
-  spr2.setSpeed(1.5, 270) = obj.fireboy.moveupW;
-  spr2.setSpeed(0, 0) = obj.fireboy.stopW;
-}, function (error){
-  console.log("Error" + error.code);
-}
-)
